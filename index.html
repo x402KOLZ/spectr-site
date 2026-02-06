@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$SPECTR - Signal From the Void</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #06060f;
+            --bg-panel: #0c0c1a;
+            --light: #B0B0D0;
+            --accent: #8B5CF6;
+            --deep: #1a1a3a;
+            --cream: #E0E0F5;
+            --glow: #A78BFA;
+            --blue: #60A5FA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: var(--bg-dark);
+            color: var(--cream);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* CRT Scanline Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            z-index: 1000;
+        }
+
+        /* Ambient Background Glow */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(96, 165, 250, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, transparent 100%);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2rem;
+            color: var(--accent);
+            text-shadow: 2px 2px 0 var(--deep), 4px 4px 0 rgba(0,0,0,0.3);
+            animation: flicker 3s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.8; }
+            94% { opacity: 1; }
+            95% { opacity: 0.9; }
+            96% { opacity: 1; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'VT323', monospace;
+            font-size: 1.4rem;
+            color: var(--light);
+            text-decoration: none;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--glow);
+            text-shadow: 0 0 10px var(--glow);
+        }
+
+        .nav-links a::after {
+            content: '_';
+            position: absolute;
+            right: -10px;
+            animation: blink 1s infinite;
+            opacity: 0;
+        }
+
+        .nav-links a:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 80px;
+            position: relative;
+        }
+
+        .hero-content {
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-logo {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 40px;
+            image-rendering: pixelated;
+            border: 4px solid var(--accent);
+            box-shadow:
+                0 0 0 4px var(--deep),
+                0 0 60px rgba(139, 92, 246, 0.4),
+                inset 0 0 30px rgba(0,0,0,0.5);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* Placeholder logo styling when image is missing */
+        .hero-logo-placeholder {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 40px;
+            border: 4px solid var(--accent);
+            box-shadow:
+                0 0 0 4px var(--deep),
+                0 0 60px rgba(139, 92, 246, 0.4),
+                inset 0 0 30px rgba(0,0,0,0.5);
+            animation: float 4s ease-in-out infinite;
+            background: linear-gradient(135deg, var(--bg-panel) 0%, var(--deep) 50%, var(--bg-panel) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-logo-placeholder::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0%,
+                rgba(139, 92, 246, 0.1) 25%,
+                transparent 50%
+            );
+            animation: rotateBg 6s linear infinite;
+        }
+
+        @keyframes rotateBg {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+        }
+
+        .hero h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(2rem, 8vw, 4.5rem);
+            margin-bottom: 20px;
+            background: linear-gradient(180deg, var(--cream) 0%, var(--glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(3px 3px 0 var(--accent)) drop-shadow(6px 6px 0 var(--deep));
+        }
+
+        .hero-tagline {
+            font-size: 2rem;
+            color: var(--light);
+            margin-bottom: 40px;
+            letter-spacing: 4px;
+        }
+
+        .hero-tagline span {
+            color: var(--accent);
+        }
+
+        /* Contract Address Box */
+        .ca-box {
+            background: var(--bg-panel);
+            border: 2px solid var(--accent);
+            padding: 20px 30px;
+            margin: 30px auto;
+            max-width: 700px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ca-box::before {
+            content: '[ CONTRACT ADDRESS ]';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-dark);
+            padding: 0 10px;
+            font-size: 0.9rem;
+            color: var(--blue);
+            letter-spacing: 2px;
+        }
+
+        .ca-box:hover {
+            border-color: var(--glow);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .ca-address {
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            color: var(--cream);
+            word-break: break-all;
+            letter-spacing: 1px;
+        }
+
+        .ca-box .copy-hint {
+            font-size: 1rem;
+            color: var(--light);
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+
+        .ca-box.copied .copy-hint {
+            color: var(--blue);
+            opacity: 1;
+        }
+
+        /* CTA Buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            padding: 18px 35px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            position: relative;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--cream);
+            box-shadow: 4px 4px 0 var(--deep);
+        }
+
+        .btn-primary:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--deep);
+        }
+
+        .btn-primary:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--deep);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--light);
+            border: 2px solid var(--light);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light);
+            color: var(--bg-dark);
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 100px 0;
+            background: linear-gradient(180deg, transparent, var(--bg-panel) 20%, var(--bg-panel) 80%, transparent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 30px;
+            border: 1px solid var(--deep);
+            background: rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
+            color: var(--glow);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.3rem;
+            color: var(--light);
+            letter-spacing: 2px;
+        }
+
+        /* Shipped Section */
+        .shipped {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .shipped::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            color: var(--cream);
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 0 var(--accent);
+        }
+
+        .section-header p {
+            font-size: 1.4rem;
+            color: var(--light);
+            letter-spacing: 2px;
+        }
+
+        .shipped-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .shipped-card {
+            background: var(--bg-panel);
+            border: 2px solid var(--deep);
+            padding: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+        }
+
+        .shipped-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--blue));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .shipped-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2);
+        }
+
+        .shipped-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .shipped-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .shipped-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.85rem;
+            color: var(--cream);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .shipped-desc {
+            font-size: 1.3rem;
+            color: var(--light);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .shipped-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .shipped-tag {
+            font-size: 0.9rem;
+            color: var(--blue);
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid var(--blue);
+            padding: 4px 10px;
+            letter-spacing: 1px;
+        }
+
+        .shipped-link {
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shipped-link::after {
+            content: '\2192';
+            transition: transform 0.2s;
+        }
+
+        .shipped-card:hover .shipped-link::after {
+            transform: translateX(5px);
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0 30px;
+            text-align: center;
+            border-top: 1px solid var(--deep);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            font-size: 1.3rem;
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--glow);
+        }
+
+        .footer-copy {
+            font-size: 1.1rem;
+            color: var(--deep);
+        }
+
+        /* Pixel decorations */
+        .pixel-decoration {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            opacity: 0.3;
+        }
+
+        .hero .pixel-decoration:nth-child(1) { top: 20%; left: 10%; animation: twinkle 2s infinite; }
+        .hero .pixel-decoration:nth-child(2) { top: 40%; right: 15%; animation: twinkle 2.5s infinite 0.5s; }
+        .hero .pixel-decoration:nth-child(3) { bottom: 30%; left: 20%; animation: twinkle 3s infinite 1s; }
+        .hero .pixel-decoration:nth-child(4) { top: 60%; right: 25%; animation: twinkle 2s infinite 1.5s; }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.5); }
+        }
+
+        /* Floating Radio Player */
+        .floating-radio {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 280px;
+            background: var(--bg-panel);
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+            z-index: 500;
+            cursor: move;
+            user-select: none;
+        }
+
+        .radio-header {
+            background: var(--accent);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .radio-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            color: var(--cream);
+        }
+
+        .radio-minimize {
+            background: none;
+            border: none;
+            color: var(--cream);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 5px;
+        }
+
+        .radio-body {
+            padding: 15px;
+        }
+
+        .radio-visualizer {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 3px;
+            height: 30px;
+            margin-bottom: 12px;
+        }
+
+        .radio-bar {
+            width: 6px;
+            background: linear-gradient(to top, var(--accent), var(--blue));
+            animation: equalize 0.8s ease-in-out infinite;
+        }
+
+        .radio-bar:nth-child(1) { animation-delay: 0.0s; }
+        .radio-bar:nth-child(2) { animation-delay: 0.1s; }
+        .radio-bar:nth-child(3) { animation-delay: 0.2s; }
+        .radio-bar:nth-child(4) { animation-delay: 0.15s; }
+        .radio-bar:nth-child(5) { animation-delay: 0.25s; }
+        .radio-bar:nth-child(6) { animation-delay: 0.1s; }
+        .radio-bar:nth-child(7) { animation-delay: 0.2s; }
+        .radio-bar:nth-child(8) { animation-delay: 0.05s; }
+
+        @keyframes equalize {
+            0%, 100% { height: 5px; }
+            50% { height: 25px; }
+        }
+
+        .radio-paused .radio-bar {
+            animation-play-state: paused;
+            height: 5px;
+        }
+
+        .radio-status {
+            font-size: 12px;
+            color: var(--blue);
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .radio-paused .radio-status {
+            color: var(--light);
+        }
+
+        .radio-track {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 7px;
+            color: var(--cream);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .radio-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .radio-play-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border: 2px solid var(--deep);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .radio-play-btn:hover {
+            background: var(--glow);
+        }
+
+        .radio-play-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--cream);
+        }
+
+        .radio-volume {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-volume svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--light);
+        }
+
+        .radio-volume-slider {
+            width: 60px;
+            -webkit-appearance: none;
+            background: var(--deep);
+            height: 4px;
+            outline: none;
+        }
+
+        .radio-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            cursor: pointer;
+        }
+
+        .floating-radio.minimized .radio-body {
+            display: none;
+        }
+
+        .floating-radio.minimized {
+            width: auto;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-logo,
+            .hero-logo-placeholder {
+                width: 200px;
+                height: 200px;
+            }
+
+            .hero-logo-placeholder {
+                font-size: 3.5rem;
+            }
+
+            .ca-address {
+                font-size: 0.85rem;
+            }
+
+            .btn {
+                font-size: 0.7rem;
+                padding: 15px 25px;
+            }
+
+            .floating-radio {
+                bottom: 15px;
+                right: 15px;
+                width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo-text">$SPECTR</div>
+            <ul class="nav-links">
+                <li><a href="#shipped">SHIPPED</a></li>
+                <li><a href="mint.html">MINT</a></li>
+                <li><a href="game.html">GAME</a></li>
+                <li><a href="whitepaper.html">DOCS</a></li>
+                <li><a href="https://x.com/YOUR_TWITTER" target="_blank">TWITTER</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="pixel-decoration"></div>
+            <div class="pixel-decoration"></div>
+            <div class="pixel-decoration"></div>
+            <div class="pixel-decoration"></div>
+
+            <div class="hero-content">
+                <div class="hero-logo-placeholder">
+                    <span style="position:relative;z-index:1;">&#x1F47B;</span>
+                </div>
+                <h1>$SPECTR</h1>
+                <p class="hero-tagline"><span>SIGNAL</span> FROM THE VOID</p>
+
+                <div class="ca-box" onclick="copyCA(this)">
+                    <div class="ca-address">0x0000000000000000000000000000000000000000</div>
+                    <div class="copy-hint">&gt; CLICK TO COPY_</div>
+                </div>
+
+                <div class="cta-buttons">
+                    <a href="https://app.uniswap.org/swap?chain=base&outputCurrency=0x0000000000000000000000000000000000000000" class="btn btn-primary" target="_blank">BUY $SPECTR</a>
+                    <a href="https://dexscreener.com/base/0x0000000000000000000000000000000000000000" class="btn btn-secondary" target="_blank">VIEW CHART</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">1B</div>
+                        <div class="stat-label">TOTAL SUPPLY</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0%</div>
+                        <div class="stat-label">BUY/SELL TAX</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">LP BURNED</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">&#8734;</div>
+                        <div class="stat-label">VIBES</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="shipped" id="shipped">
+            <div class="container">
+                <div class="section-header">
+                    <h2>// SHIPPED</h2>
+                    <p>TOOLS BUILT BY SPECTR</p>
+                </div>
+
+                <div class="shipped-grid">
+                    <a href="https://github.com/YOUR_GITHUB/evm-dex-integrator" target="_blank" class="shipped-card">
+                        <span class="shipped-emoji">&#x1F300;</span>
+                        <h3 class="shipped-title">UNISWAP DEX INTEGRATOR</h3>
+                        <p class="shipped-desc">Build Base DeFi apps with Uniswap V3. Swaps, limit orders, liquidity provision, and multi-hop routing through a unified interface.</p>
+                        <div class="shipped-tags">
+                            <span class="shipped-tag">SWAPS</span>
+                            <span class="shipped-tag">LIQUIDITY</span>
+                            <span class="shipped-tag">ROUTING</span>
+                        </div>
+                        <span class="shipped-link">VIEW ON GITHUB</span>
+                    </a>
+
+                    <a href="https://github.com/YOUR_GITHUB/base-frames-builder" target="_blank" class="shipped-card">
+                        <span class="shipped-emoji">&#x1F517;</span>
+                        <h3 class="shipped-title">FARCASTER FRAMES BUILDER</h3>
+                        <p class="shipped-desc">Build Farcaster Frames that unfurl into interactive transactions on Warpcast, the web, and beyond. Mints, swaps, and onchain actions.</p>
+                        <div class="shipped-tags">
+                            <span class="shipped-tag">FRAMES</span>
+                            <span class="shipped-tag">FARCASTER</span>
+                            <span class="shipped-tag">BASE</span>
+                        </div>
+                        <span class="shipped-link">VIEW ON GITHUB</span>
+                    </a>
+
+                    <a href="https://github.com/YOUR_GITHUB/solidity-security-auditor" target="_blank" class="shipped-card">
+                        <span class="shipped-emoji">&#x1F6E1;&#xFE0F;</span>
+                        <h3 class="shipped-title">SOLIDITY SECURITY AUDITOR</h3>
+                        <p class="shipped-desc">Audit Solidity smart contracts for common vulnerabilities. Reentrancy, access control, flash loan vectors, and pre-deploy security checklists.</p>
+                        <div class="shipped-tags">
+                            <span class="shipped-tag">SECURITY</span>
+                            <span class="shipped-tag">SOLIDITY</span>
+                            <span class="shipped-tag">AUDITS</span>
+                        </div>
+                        <span class="shipped-link">VIEW ON GITHUB</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://x.com/YOUR_TWITTER" target="_blank">TWITTER</a>
+                <a href="https://dexscreener.com/base/0x0000000000000000000000000000000000000000" target="_blank">DEXSCREENER</a>
+                <a href="https://basescan.org/token/0x0000000000000000000000000000000000000000" target="_blank">BASESCAN</a>
+            </div>
+            <p class="footer-copy">$SPECTR 2026 // NOT FINANCIAL ADVICE // DYOR</p>
+        </div>
+    </footer>
+
+    <!-- Floating Radio Player -->
+    <div class="floating-radio radio-paused" id="floatingRadio">
+        <div class="radio-header" id="radioHeader">
+            <span class="radio-title">&#x1F50A; SPECTR RADIO</span>
+            <button class="radio-minimize" onclick="toggleMinimize(event)">&minus;</button>
+        </div>
+        <div class="radio-body">
+            <div class="radio-visualizer">
+                <div class="radio-bar"></div>
+                <div class="radio-bar"></div>
+                <div class="radio-bar"></div>
+                <div class="radio-bar"></div>
+                <div class="radio-bar"></div>
+                <div class="radio-bar"></div>
+                <div class="radio-bar"></div>
+                <div class="radio-bar"></div>
+            </div>
+            <div class="radio-status" id="radioStatus">PAUSED</div>
+            <div class="radio-track">LOFI BEATS TO TRADE TO</div>
+            <div class="radio-controls">
+                <div class="radio-volume">
+                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+                    <input type="range" class="radio-volume-slider" id="radioVolume" min="0" max="100" value="50">
+                </div>
+                <button class="radio-play-btn" onclick="toggleRadio()">
+                    <svg id="radioPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <svg id="radioPauseIcon" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <div class="radio-volume">
+                    <input type="range" class="radio-volume-slider" id="radioVolume2" min="0" max="100" value="50">
+                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="radioAudio" loop>
+        <source src="https://streams.ilovemusic.de/iloveradio17.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Contract address - replace with your actual Base contract address
+        const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+        // Copy CA
+        function copyCA(element) {
+            navigator.clipboard.writeText(CONTRACT_ADDRESS).then(() => {
+                element.classList.add('copied');
+                element.querySelector('.copy-hint').textContent = '> COPIED!_';
+                setTimeout(() => {
+                    element.classList.remove('copied');
+                    element.querySelector('.copy-hint').textContent = '> CLICK TO COPY_';
+                }, 2000);
+            });
+        }
+
+        // Parallax pixel decorations
+        document.addEventListener('mousemove', (e) => {
+            const decorations = document.querySelectorAll('.pixel-decoration');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            decorations.forEach((dec, i) => {
+                const speed = (i + 1) * 10;
+                dec.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+
+        // Floating Radio Player
+        const radio = document.getElementById('floatingRadio');
+        const radioAudio = document.getElementById('radioAudio');
+        const radioPlayIcon = document.getElementById('radioPlayIcon');
+        const radioPauseIcon = document.getElementById('radioPauseIcon');
+        const radioStatus = document.getElementById('radioStatus');
+        const radioVolume = document.getElementById('radioVolume');
+        const radioVolume2 = document.getElementById('radioVolume2');
+
+        let isPlaying = false;
+
+        function toggleRadio() {
+            if (isPlaying) {
+                radioAudio.pause();
+                radioPlayIcon.style.display = 'block';
+                radioPauseIcon.style.display = 'none';
+                radio.classList.add('radio-paused');
+                radioStatus.textContent = 'PAUSED';
+            } else {
+                radioAudio.play();
+                radioPlayIcon.style.display = 'none';
+                radioPauseIcon.style.display = 'block';
+                radio.classList.remove('radio-paused');
+                radioStatus.textContent = 'NOW PLAYING';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function toggleMinimize(e) {
+            e.stopPropagation();
+            radio.classList.toggle('minimized');
+        }
+
+        // Volume
+        radioVolume.addEventListener('input', (e) => {
+            radioAudio.volume = e.target.value / 100;
+            radioVolume2.value = e.target.value;
+        });
+        radioVolume2.addEventListener('input', (e) => {
+            radioAudio.volume = e.target.value / 100;
+            radioVolume.value = e.target.value;
+        });
+        radioAudio.volume = 0.5;
+
+        // Draggable
+        let isDragging = false;
+        let dragOffsetX, dragOffsetY;
+
+        document.getElementById('radioHeader').addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('radio-minimize')) return;
+            isDragging = true;
+            dragOffsetX = e.clientX - radio.offsetLeft;
+            dragOffsetY = e.clientY - radio.offsetTop;
+            radio.style.transition = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            let newX = e.clientX - dragOffsetX;
+            let newY = e.clientY - dragOffsetY;
+
+            newX = Math.max(0, Math.min(newX, window.innerWidth - radio.offsetWidth));
+            newY = Math.max(0, Math.min(newY, window.innerHeight - radio.offsetHeight));
+
+            radio.style.left = newX + 'px';
+            radio.style.top = newY + 'px';
+            radio.style.right = 'auto';
+            radio.style.bottom = 'auto';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            radio.style.transition = '';
+        });
+
+        // Touch support
+        document.getElementById('radioHeader').addEventListener('touchstart', (e) => {
+            if (e.target.classList.contains('radio-minimize')) return;
+            const touch = e.touches[0];
+            isDragging = true;
+            dragOffsetX = touch.clientX - radio.offsetLeft;
+            dragOffsetY = touch.clientY - radio.offsetTop;
+            radio.style.transition = 'none';
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const touch = e.touches[0];
+            let newX = touch.clientX - dragOffsetX;
+            let newY = touch.clientY - dragOffsetY;
+
+            newX = Math.max(0, Math.min(newX, window.innerWidth - radio.offsetWidth));
+            newY = Math.max(0, Math.min(newY, window.innerHeight - radio.offsetHeight));
+
+            radio.style.left = newX + 'px';
+            radio.style.top = newY + 'px';
+            radio.style.right = 'auto';
+            radio.style.bottom = 'auto';
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+            radio.style.transition = '';
+        });
+    </script>
+</body>
+</html>

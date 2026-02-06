@@ -1,0 +1,5 @@
+[phases.setup]
+cmds = ["apt-get update && apt-get install -y python3"]
+
+[start]
+cmd = "python3 -m http.server $PORT --directory ."
